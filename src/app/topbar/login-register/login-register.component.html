@@ -1,0 +1,60 @@
+<button mdbBtn size="sm" data-toggle="tooltip" data-placement="bottom" title="Join Us" class="font-weight-bold" color="primary" (click)="loginregistration.show()">LOGIN / REGISTER</button>
+<div mdbModal #loginregistration="mdbModal" class="modal fade left text-primary" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-side modal-top-right" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span *ngIf="!showFormLogin" class="text-center w-100"><p class="h4">Sign up</p></span>
+        <span *ngIf="showFormLogin" class="text-center w-100"><p class="h4">Log in</p></span>
+        <div class="back_modal">
+          <a (click)="loginregistration.hide()"><mdb-icon fas icon="times"></mdb-icon></a>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form class="text-center mb-4" action="#!" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="form-row" *ngIf="!showFormLogin">
+            <div class="col">
+              <div class="md-form m-0">
+                <input mdbInput type="text" class="text-dark form-control border-bottom border-primary" formControlName="firstName">
+                <label class="ml-2">First Name*</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="md-form m-0">
+                <input mdbInput type="text" class="text-dark form-control border-bottom border-primary" formControlName="lastName">
+                <label class="ml-2">Last Name*</label>
+              </div>
+            </div>
+          </div>
+          <div class="md-form">
+            <input mdbInput type="email" class="text-dark form-control border-bottom border-primary" formControlName="email">
+            <label class="ml-2">e-Mail*</label>
+            <div class="text-danger text-left">{{formerror}}</div>
+          </div>
+          <div class="md-form">
+            <input mdbInput type="password" class="text-dark form-control border-bottom border-primary" formControlName="password">
+            <label class="ml-2">Password*</label>
+          </div>
+          <div class="md-form" *ngIf="!showFormLogin">
+            <input mdbInput type="password" class="text-dark form-control border-bottom border-primary" formControlName="password2">
+            <label class="ml-2">Password Again*</label>
+          </div>
+          <div *ngIf="showFormLogin" class="custom-control custom-checkbox text-left">
+            <input type="checkbox" class="custom-control-input" id="chkRemember" formControlName="remember">
+            <label class="custom-control-label" for="chkRemember">Remember me</label>
+          </div>
+          <button *ngIf="!showFormLogin" class="btn btn-info my-4 btn-block" type="submit" [disabled]="!profileForm.valid">Sign up</button>
+          <button *ngIf="showFormLogin" class="btn btn-info my-4 btn-block" type="submit" [disabled]="!profileForm.valid">Login</button>
+          <a *ngIf="showFormLogin" href="/api/forgotPassword" class="mb-4" role="button"><i class="fab fa-passwd-reset light-blue-text"></i>Forgot Password? Reset</a>
+          <p *ngIf="showFormLogin"><span class="text-dark">Not a member? </span><a (click)="showFormLogin = false">Register Here!</a></p>
+          <p *ngIf="!showFormLogin"><span class="text-dark">Already a member? </span><a (click)="showFormLogin = true">Login Here!</a></p>
+          <p>or sign in with:</p>
+          <a *ngFor="let item of socialLoginBtn" href="/api/auth/{{item}}" class="mx-2" role="button"><i class="fab fa-{{item}} light-blue-text"></i></a>
+        </form>
+        <div class="modal-footer text-center">
+          <hr>
+          <p class="text-dark">By clicking <em *ngIf="!showFormLogin">Sign up</em><em *ngIf="showFormLogin">Login</em> you agree to our <a href="" target="_blank" >terms of service</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

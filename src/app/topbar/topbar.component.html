@@ -1,0 +1,38 @@
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark unique-color" [containerInside]="false">
+  <mdb-navbar-brand>
+    <a class="navbar-brand" data-toggle="tooltip" data-placement="bottom" title="Our Product" routerLink="">AI Chess</a>
+    <span class="font-weight-bold">powered by</span>&nbsp;&nbsp;
+    <a href="http://www.eispowered.com" data-toggle="tooltip" data-placement="bottom" title="Powered by EISLABS®" class="text-white">EISLABS®</a>
+  </mdb-navbar-brand>
+  <links>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" *ngIf=ds.user>
+          <app-aichallenge></app-aichallenge>
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto nav-flex-icons">
+      <li class="nav-item">
+        <a class="nav-link" *ngIf=ds.user>
+          <app-uploadalgorithm></app-uploadalgorithm>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" *ngIf=ds.user>
+          <app-notification></app-notification>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" *ngIf=!ds.user>
+          <app-login-register></app-login-register>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" *ngIf=ds.user>
+          <app-profile [user]=ds.user></app-profile>
+        </a>
+      </li>
+    </ul>
+  </links>
+</mdb-navbar>

@@ -1,0 +1,11 @@
+<div class="btn-group p-2" mdbDropdown>
+  <div mdbDropdownToggle>
+    <mdb-icon fas icon="bell"></mdb-icon><span class="bages" *ngIf="ds.notifications.length>0">{{ds.notifications.length}}</span>
+  </div>
+  <div *ngIf="ds.notifications.length>0" style="width:20em" class="dropdown-menu dropdown-menu-right dropdown-primary">
+    <div style="font-size: 0.7em;" class="row p-2 text-center font-weight-bold" *ngFor='let notification of ds.notifications'>
+        <div class="col-4">{{notification.type}}</div>
+        <div class="col-4">{{notification.msg}}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="sidenav overflow-hidden h-100 pl-4" style="box-sizing: content-box;">
+  <div *ngIf="showsidenav" class="h-100 d-flex flex-column">
+    <div class="row flex-shrink-0">
+      <div class="md-form w-100 mb-0">
+        <mdb-icon fas icon="search" class="prefix text-primary"></mdb-icon>
+        <input mdbInput type="search" class="form-control searchPlBt" id="defaultForm-search" style="min-width: 10em;">
+        <label for="defaultForm-search" class="text-primary">Search Players / Battles</label>
+      </div>
+    </div>
+    <div class="row flex-shrink-0" *ngIf="!ds.playersListLength"> No friends are online</div>
+    <div class="row flex-grow-1" *ngIf="ds.playersListLength">
+      <div class="row h-100 w-100 d-flex">
+        <div class="scrollbar flex-fill scrollbar-primary position-relative m-2 px-2" style="min-width: 9em; overflow: hidden auto;">
+          <div class="position-absolute w-100">
+            <div *ngFor="let pl of ds.playersList | keyvalue: asIs" class="row unlistsection">
+              <div class="col-12 frontel">{{pl.key}}</div>
+              <div class="col-12 text-right hideel" *ngIf="ds.user && !pl.value.st">
+                <a class="clickeffect text-primary font-weight-bold" (click)="challengePlayer(pl.key)" data-toggle="tooltip" data-placement="bottom" title="Challenge {{pl.key}}"><mdb-icon fas icon="handshake"></mdb-icon></a>
+              </div>
+              <div class="col-12 text-right hideel" *ngIf="ds.user && pl.value.st === 'sender'">
+                <a class="clickeffect text-warning font-weight-bold" (click)="ds.CHALLENGE.REMIND(pl.key)" data-toggle="tooltip" data-placement="bottom" title="Remind {{pl.key}}"><mdb-icon fas icon="bell"></mdb-icon></a>&nbsp;
+                <a class="clickeffect text-danger font-weight-bold" (click)="ds.CHALLENGE.REVOKE(pl.key)" data-toggle="tooltip" data-placement="bottom" title="Revolke challenge {{pl.key}}"><mdb-icon fas icon="strikethrough"></mdb-icon></a>
+              </div>
+              <div class="col-12 text-right hideel" *ngIf="ds.user && pl.value.st === 'receiver'">
+                <a class="clickeffect text-success font-weight-bold" (click)="ds.CHALLENGE.ACCEPT(pl.key)" data-toggle="tooltip" data-placement="bottom" title="Accept {{pl.key}}'s challenge'"><mdb-icon fas icon="check"></mdb-icon></a>&nbsp;
+                <a class="clickeffect text-danger font-weight-bold" (click)="ds.CHALLENGE.REJECT(pl.key)" data-toggle="tooltip" data-placement="bottom" title="Reject {{pl.key}}'s challenge'"><mdb-icon fas icon="times"></mdb-icon></a>
+              </div>
+              <div class="col-12 text-right hideel" *ngIf="ds.user && pl.value.st === 'game'">
+                <a class="clickeffect text-success font-weight-bold" (click)="ds.GOTO(pl.value.game)" data-toggle="tooltip" data-placement="bottom" title="goto Game'"><mdb-icon fas icon="gamepad"></mdb-icon></a>&nbsp;
+              </div>
+              <div class="col-12 text-right hideel" *ngIf="!ds.user">
+                <a class="clickeffect text-primary font-weight-bold text-left" (click)="null" data-toggle="tooltip" data-placement="bottom" title="Login to Challenge anyone"><mdb-icon fas icon="sign-in-alt"></mdb-icon></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-1" style="writing-mode: vertical-rl; text-orientation: mixed;"><mdb-icon fas icon="gamepad"></mdb-icon><span class="border-right border-bottom pb-1"> Players</span></div>
+      </div>
+    </div>
+    <div class="row flex-shrink-0" *ngIf="!ds.battlesListLength"> No games for you to see</div>
+    <div class="row flex-grow-1" *ngIf="ds.battlesListLength">
+      <div class="row h-100 w-100 d-flex">
+        <div class="scrollbar flex-fill scrollbar-primary position-relative m-2 px-2" style="min-width: 9em; overflow: hidden auto;">
+          <div class="position-absolute w-100">
+            <div *ngFor="let bt of ds.battlesList | keyvalue: asIs" class="row unlistsection" (click)="ds.GOTO(bt.key)">
+              <div class="col-12 frontel">{{bt.value.player1}} / {{bt.value.player2}}</div>
+              <div class="col-12 text-right hideel">
+                <a class="clickeffect text-success font-weight-bold" data-toggle="tooltip" data-placement="bottom" title="goto Game'"><mdb-icon fas icon="gamepad"></mdb-icon></a>&nbsp;
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-1" style="writing-mode: vertical-rl; text-orientation: mixed;"><mdb-icon fas icon="handshake"></mdb-icon><span class="border-right border-bottom pb-1"> Battles</span></div>
+      </div>
+    </div>
+  </div>
+  <mdb-icon title="hide players" *ngIf="showsidenav" fas icon="times" class="text-danger sidenavdrag" (click)="showsidenav = !showsidenav"></mdb-icon>
+  <mdb-icon title="show players" *ngIf="!showsidenav" fas icon="arrow-right" class="text-primary sidenavdrag" (click)="showsidenav = !showsidenav"></mdb-icon>
+</div>
+
+<!-- #region challenge modal-->
+
+<div mdbModal #ChallengeModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true" style="overflow-x: hidden;overflow-y: auto;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom border-white text-primary">
+        <mdb-icon fas icon="chevron-left" (click)='ChallengeModal.hide()'></mdb-icon>
+        <h5 class="modal-title font-weight-bold w-100 text-center" id="myModalLabel">
+          Challenging<br>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="p-2">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="trainingGameSwitch" checked #trainingGameCheck>
+            <label class="custom-control-label" for="trainingGameSwitch">Training Game?</label>
+          </div>
+          <div class="mt-2" *ngIf=!trainingGameCheck.checked>
+            <div class="md-form form-md mb-2">
+              <input mdbInput Placeholder='Enter Amount' type="text" id="form1" class="form-control form-control-sm">
+              <label for="form1" class="font-weight-bold text-primary" style='font-size: 0.8;'>Bet Amount</label>
+            </div>
+          </div>
+          <div class="mt-2">
+            <label for="form1" class="font-weight-bold text-primary" style='font-size: 0.8em;'>Who Can see</label><br>
+            <div *ngFor="let buttTxt of {'public': 'lock', 'link': 'share-alt', 'private': 'globe'} | keyvalue: asIs" class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" #visibility value='{{buttTxt.key}}' id="{{buttTxt.key}}radio" name="radioVisibility" mdbInput checked>
+              <label class="custom-control-label text-primary" for="{{buttTxt.key}}radio">
+                <mdb-icon fas icon="{{buttTxt.value}}"></mdb-icon> {{buttTxt.key}}
+              </label>
+            </div>
+          </div>
+          <div class="mt-2">
+            <label for="form1" class="font-weight-bold text-primary" style='font-size: 0.8em;'>Who Can Play</label><br>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" value=1 id="radioperson" #personradio name="radio_who_can_play" mdbInput checked>
+              <label class="custom-control-label text-primary" for="radioperson"><mdb-icon fas icon="user"></mdb-icon> Person</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" value=2 id="radioAI" #AIradio name="radio_who_can_play" mdbInput checked>
+              <label class="custom-control-label text-primary" for="radioAI"><mdb-icon fas icon="radio"></mdb-icon> AI</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" class="custom-control-input" value=3 id="radioboth" #bothradio name="radio_who_can_play" mdbInput checked>
+              <label class="custom-control-label text-primary" for="radioboth"><mdb-icon fas icon="user-cog"></mdb-icon> Both</label>
+            </div>
+          </div>
+          <div class="mt-2" *ngIf="!personradio.checked">
+            <label for="form1" class="font-weight-bold text-primary" style='font-size: 0.8em;'>Import AI</label><br>
+            <ngx-dropzone (change)="onSelect($event)">
+                <ngx-dropzone-label>Drop AI File here</ngx-dropzone-label>
+                <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+                  <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                </ngx-dropzone-preview>
+            </ngx-dropzone>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-top border-white">
+        <button mdbBtn type="button" size='sm' color="primary" class="relative waves-light" (click)="challengeRequest('SEND')" mdbWavesEffect>SEND</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- #endregion -->

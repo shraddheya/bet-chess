@@ -1,0 +1,26 @@
+<div class="btn-group" mdbDropdown>
+  <div mdbDropdownToggle>
+    <img src={{user.DP}} alt="P" class="profilePic z-depth-5">
+  </div>
+  <div style="font-size: 0.9em;" class="dropdown-menu z-depth-2  dropdown-menu-right dropdown-primary">
+    <div class="p-1 text-center">
+      <span>Signed in as</span><br>
+      <span class="font-weight-bold">{{user.username}}</span>
+    </div>
+    <div class="text-dark text-center font-weight-bold m-2">
+      <span class="hoverable p-2 rounded-pill border border-dark">
+        <a routerLink='/profilemanager'>
+          <mdb-icon fas icon="suitcase"></mdb-icon>Profile
+        </a>
+      </span>
+    </div>
+    <hr>
+    <ul style="list-style-type: none;" class="mr-5">
+      <li *ngFor="let item of menuOpts | keyvalue: asIs">
+        <a href='{{item.key}}' class="dropdown-item waves-light font-weight-bold" mdbWavesEffect>
+          <mdb-icon fas icon="{{item.value}}"></mdb-icon>{{item.key}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

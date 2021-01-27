@@ -1,0 +1,47 @@
+<button type="button" mdbBtn color="primary" size="sm" class="relative waves-light" (click)="algorithmList.show()" mdbWavesEffect>Uploaded AI</button>
+  <p></p>
+  <span></span>
+<div mdbModal #algorithmList="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content dropfilediv">
+      <div class="modal-header">
+        <a (click)="algorithmList.hide()" style="font-size: 1.5em;" class="text-primary text-right">
+          <mdb-icon fas icon="chevron-circle-left"></mdb-icon>
+        </a>   
+        <h4 class="modal-title w-100 text-center font-weight-bold" id="myModalLabel">Statement Summary</h4>
+      </div>
+      <div class="modal-body">
+        <div class="p-2">
+          <table mdbTable mdbTableScroll scrollY="true" maxHeight="200">
+            <thead>
+              <tr>
+                <th scope="col">FILENAME</th>
+                <th scope="col">Total Games <span class="text-success">W</span> / <span class="text-danger">L</span> / <span class="text-warning">T</span></th>
+                <th scope="col">Updated On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr mdbTableCol *ngFor="let algoel of AlgorithData">
+                <td>{{algoel.algofile}}</td>
+                <td>{{algoel.games}} (<span class="text-success">{{algoel.win}}</span> / <span class="text-danger">{{algoel.lose}}</span> / <span class="text-warning">{{algoel.tie}}</span>)</td>
+                <td>{{algoel.uploadtime}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row p-4">
+          <div class="col-12">
+            <ngx-dropzone (change)="onSelect($event)" class="dropezonehover">
+              <ngx-dropzone-label>Drop AI File here</ngx-dropzone-label>
+              <ngx-dropzone-preview *ngFor="let f of files" [removable]="true">
+                <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+              </ngx-dropzone-preview>
+            </ngx-dropzone>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
